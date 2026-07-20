@@ -490,7 +490,7 @@
 
     <div class="quiz-card" id="card5">
       <h3>Case 5</h3>
-      <p class="vignette">A neurology resident is testing a patient with a suspected brainstem lesion. The patient's left arm and left leg are weak. The right side of his tongue deviates upon protrusion, and the right lower face droops. The forehead muscles are symmetric and intact. Where could a single lesion produce this combination?</p>
+      <p class="vignette">A neurology resident is testing a patient with a suspected brainstem lesion. The patient's left arm and left leg are weak. The right side of his tongue deviates upon protrusion. Limb weakness and tongue deviation are on opposite sides of the body. Where could a single lesion produce this crossed pattern?</p>
       <div class="options" id="options5">
         <button onclick="check(5, 'A', this)">A. Left internal capsule</button>
         <button onclick="check(5, 'B', this)">B. Right cerebral peduncle</button>
@@ -564,12 +564,12 @@
     }
 
     var explanations = {
-      1: 'Left corticobulbar tract. Contralateral lower facial droop and tongue deviation with no limb weakness rules out corticospinal. The forehead is spared, meaning the lesion is upper motor neuron, not the facial nerve. Most cranial nerve nuclei get bilateral input, but the lower face (CN VII) and tongue (CN XII) are wired contralaterally.',
-      2: 'Corticospinal tract. The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem.',
+      1: 'Left corticobulbar tract. Contralateral lower facial droop and tongue deviation with no limb weakness rules out corticospinal. The forehead is spared, meaning the lesion is upper motor neuron, not the facial nerve. Most cranial nerve nuclei get bilateral input, but the lower face (CN VII) and tongue (CN XII) are wired contralaterally. A one-sided lesion hits them directly.',
+      2: 'Corticospinal tract. The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem with indirect effects on speech.',
       3: 'Disrupted corticospinal and extrapyramidal postural control. Parkinson disease affects basal ganglia circuits, disrupting corticospinal and extrapyramidal (vestibulospinal, reticulospinal) postural systems. Stooped posture compresses the larynx and restricts diaphragmatic movement. Result: hypokinetic dysarthria. The larynx is structurally intact.',
-      4: 'Pseudobulbar palsy. Bilateral corticobulbar damage strips both hemispheres of control over the cranial nerve motor nuclei. The result is severe spastic dysarthria with slow, effortful speech, a spastic tongue, exaggerated jaw jerk, and emotional lability. This is the hallmark of bilateral UMN damage to the corticobulbar pathway.',
-      5: 'Right medial medulla. This is medial medullary syndrome. The left arm and leg are weak because the right medullary pyramid (corticospinal fibers) is damaged before the decussation, causing contralateral limb weakness. The right tongue deviates because the right hypoglossal nucleus or its exiting fibers are caught in the same lesion, causing ipsilateral tongue weakness.',
-      6: 'Corticospinal tract. The arm movement is driven by the corticospinal tract. When the arm decelerates sharply, the physical impulse travels through the trunk and briefly raises intrathoracic pressure. This pressure pulse increases acoustic amplitude at that moment. The effect is biomechanical, driven by the limb deceleration the corticospinal tract controls (Pouw et al., 2020).'
+      4: 'Pseudobulbar palsy. Bilateral corticobulbar damage strips both hemispheres of control over the cranial nerve motor nuclei. The result is severe spastic dysarthria with slow, effortful speech, a spastic tongue, exaggerated jaw jerk, and emotional lability. This is the classic presentation of bilateral UMN damage to the corticobulbar pathway.',
+      5: 'Right medial medulla. This is medial medullary syndrome (Dejerine syndrome). The left arm and leg are weak because the right medullary pyramid is damaged before the decussation, knocking out corticospinal fibers bound for the left side of the body. The right tongue deviates because the right hypoglossal nucleus or its exiting fibers are caught in the same lesion, causing ipsilateral tongue weakness. The crossed pattern (contralateral limb weakness plus ipsilateral tongue deviation) is the hallmark of a brainstem lesion at this level.',
+      6: 'Corticospinal tract. The arm movement is driven by the corticospinal tract. When the arm decelerates sharply, the physical impulse travels through the trunk and briefly raises intrathoracic pressure. That pressure pulse increases acoustic amplitude at the same moment. The effect is biomechanical, not cognitive, and relies on the limb motion the corticospinal tract controls (Pouw et al., 2020).'
     };
 
     fb.innerHTML = '<strong>' + explanations[caseNum].split('. ')[0] + '.</strong> ' + explanations[caseNum].split('. ').slice(1).join('. ');
@@ -585,13 +585,19 @@
     el.innerHTML = '';
     el.className = 'bg-marquee active ' + colorClass;
 
-    var rowCount = 18;
+    var w = window.innerWidth;
+    var rowCount = 16;
     var rowHeight = Math.ceil(window.innerHeight / rowCount);
+
+    var repeated = text;
+    for (var r = 0; r < 8; r++) {
+      repeated += '    ' + text;
+    }
 
     for (var i = 0; i < rowCount; i++) {
       var row = document.createElement('div');
       row.className = 'row';
-      row.textContent = text + '   ' + text + '   ' + text + '   ' + text + '   ' + text + '   ' + text + '   ';
+      row.textContent = repeated;
       row.style.top = (i * rowHeight) + 'px';
       row.style.fontSize = (0.55 + (i % 3) * 0.1) + 'rem';
       el.appendChild(row);
@@ -599,17 +605,19 @@
 
     var rows = el.querySelectorAll('.row');
     var offsets = [];
+
     for (var j = 0; j < rows.length; j++) {
-      offsets.push((j % 4) * 60);
+      offsets.push((j / rowCount) * w);
     }
 
     function tick() {
       for (var k = 0; k < rows.length; k++) {
         offsets[k] -= 0.8;
-        if (offsets[k] < -window.innerWidth) offsets[k] = window.innerWidth + 200;
+        if (offsets[k] < -w) {
+          offsets[k] = w - 20 + (Math.random() * 80);
+        }
         var x = offsets[k];
-        var y = parseFloat(rows[k].style.top);
-        rows[k].style.transform = 'translate(' + x + 'px, ' + (Math.sin(x * 0.02 + k * 0.4) * 18) + 'px)';
+        rows[k].style.transform = 'translate(' + x + 'px, ' + (Math.sin(x * 0.015 + k * 0.5) * 20) + 'px)';
       }
       marqueeTimer = requestAnimationFrame(tick);
     }
