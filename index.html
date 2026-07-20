@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LESION LOCATOR!!</title>
+<title>LESION LOCATOR</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -28,13 +28,27 @@
     top: 0; left: 0; width: 100%; height: 100%;
     background: repeating-linear-gradient(
       0deg,
-      rgba(0,0,0,0.12) 0px,
-      rgba(0,0,0,0.12) 2px,
+      rgba(0,0,0,0.10) 0px,
+      rgba(0,0,0,0.10) 2px,
       transparent 2px,
       transparent 4px
     );
     pointer-events: none;
     z-index: 999;
+  }
+
+  body.shake {
+    animation: screenShake 0.4s ease;
+  }
+  @keyframes screenShake {
+    0% { transform: translate(0); }
+    15% { transform: translate(-6px, 3px); }
+    30% { transform: translate(6px, -3px); }
+    45% { transform: translate(-4px, -2px); }
+    60% { transform: translate(4px, 2px); }
+    75% { transform: translate(-2px, 1px); }
+    90% { transform: translate(2px, -1px); }
+    100% { transform: translate(0); }
   }
 
   .tv-frame {
@@ -85,7 +99,7 @@
   h1 {
     margin: 0 0 4px 0;
     font-family: 'Press Start 2P', monospace;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     color: #ffcc00;
     text-shadow: 0 0 12px #ff8800, 0 0 30px #ff4400;
     text-align: center;
@@ -95,12 +109,12 @@
   .subtitle {
     color: #aaccff;
     margin: 0 0 30px 0;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     font-family: 'Press Start 2P', monospace;
     text-align: center;
     text-shadow: 0 0 8px #6688cc;
     letter-spacing: 0.03em;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   .scoreboard {
@@ -134,15 +148,54 @@
     box-sizing: border-box;
     box-shadow: 0 0 18px rgba(100,100,255,0.10);
     position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
   .quiz-card.cleared {
     border-color: #2f855a;
-    box-shadow: 0 0 18px rgba(80,200,120,0.18);
+    box-shadow: 0 0 22px rgba(80,200,120,0.22);
   }
+  .quiz-card.cleared::after {
+    content: 'CLEAR';
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.48rem;
+    background: #2f855a;
+    color: #0a0a12;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    animation: badgePop 0.4s ease;
+  }
+  @keyframes badgePop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+  }
+  .quiz-card.failed {
+    border-color: #993344;
+    box-shadow: 0 0 22px rgba(200,60,80,0.22);
+  }
+  .quiz-card.failed::after {
+    content: 'MISS';
+    position: absolute;
+    top: -10px;
+    right: 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.48rem;
+    background: #993344;
+    color: #ffaabb;
+    padding: 4px 10px;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    animation: badgePop 0.4s ease;
+  }
+
   .quiz-card h3 {
     margin: 0 0 8px 0;
     font-family: 'Press Start 2P', monospace;
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     color: #ff88cc;
     text-shadow: 0 0 6px #cc4488;
     letter-spacing: 0.05em;
@@ -187,16 +240,22 @@
     background: #0a2a1a;
     color: #66ffaa;
     font-weight: 700;
-    box-shadow: 0 0 16px rgba(80,255,160,0.30);
+    box-shadow: 0 0 20px rgba(80,255,160,0.40);
+    animation: correctPulse 0.6s ease 2;
   }
   .options button.correct::before {
-    content: '>> ';
+    content: '\25B6 ';
   }
   .options button.wrong {
     border-color: #cc4466;
     background: #2a0a14;
     color: #ff6688;
     text-decoration: line-through;
+  }
+  @keyframes correctPulse {
+    0% { box-shadow: 0 0 20px rgba(80,255,160,0.40); }
+    50% { box-shadow: 0 0 40px rgba(80,255,160,0.80); }
+    100% { box-shadow: 0 0 20px rgba(80,255,160,0.40); }
   }
   .options button:disabled {
     cursor: default;
@@ -264,8 +323,8 @@
 <div class="tv-frame">
   <div class="tv-antenna"></div>
   <div class="tv-screen">
-    <h1>LESION LOCATOR!!</h1>
-    <p class="subtitle">Three patients enter.<br>You find the lesion.</p>
+    <h1>LESION LOCATOR</h1>
+    <p class="subtitle">Six patients enter.<br>You find the lesion.</p>
 
     <div class="scoreboard">
       <div class="score-item"><span class="num" id="scoreNum">0</span>CLEARED</div>
@@ -273,7 +332,7 @@
     </div>
 
     <div class="quiz-card" id="card1">
-      <h3>&#9654; Case 1</h3>
+      <h3>Case 1</h3>
       <p class="vignette">A 62-year-old man arrives after a stroke. His speech is slow and effortful with a strained-strangled voice quality. His face droops on the right side only below the eye. He can wrinkle his forehead and close both eyes. When asked to stick out his tongue, it deviates to the right. His arms and legs show no weakness on either side.</p>
       <div class="options" id="options1">
         <button onclick="check(1, 'A', this)">A. Left corticospinal tract</button>
@@ -285,7 +344,7 @@
     </div>
 
     <div class="quiz-card" id="card2">
-      <h3>&#9654; Case 2</h3>
+      <h3>Case 2</h3>
       <p class="vignette">A 24-year-old woman sustained a cervical spinal cord injury at C4 in a car accident. She can speak but her voice is quiet and breathy. She runs out of air after four or five words and has to take frequent breaths mid-sentence. Her face and tongue move normally, and her articulation is clear when she has enough air.</p>
       <div class="options" id="options2">
         <button onclick="check(2, 'A', this)">A. Corticobulbar tract</button>
@@ -297,7 +356,7 @@
     </div>
 
     <div class="quiz-card" id="card3">
-      <h3>&#9654; Case 3</h3>
+      <h3>Case 3</h3>
       <p class="vignette">A 71-year-old man with Parkinson's disease has a stooped, forward-flexed posture. His speech is monopitched and monoloud with reduced vocal intensity. He does not have facial droop, tongue deviation, or articulatory imprecision. His voice quality is breathy and weak, but his larynx itself shows no structural abnormality on exam.</p>
       <div class="options" id="options3">
         <button onclick="check(3, 'A', this)">A. Bilateral corticobulbar lesion</button>
@@ -308,8 +367,44 @@
       <div class="feedback" id="feedback3"></div>
     </div>
 
+    <div class="quiz-card" id="card4">
+      <h3>Case 4</h3>
+      <p class="vignette">A 58-year-old woman has suffered a series of small bilateral strokes. Her face shows little expression. Her speech is extremely slow, nasal, and effortful. When she tries to say "pataka" it comes out forced and imprecise. Her tongue moves sluggishly and cannot be protruded quickly. Her jaw jerk reflex is exaggerated. She laughs and cries at inappropriate times.</p>
+      <div class="options" id="options4">
+        <button onclick="check(4, 'A', this)">A. Myasthenia gravis</button>
+        <button onclick="check(4, 'B', this)">B. Unilateral corticospinal lesion</button>
+        <button onclick="check(4, 'C', this)">C. Pseudobulbar palsy from bilateral corticobulbar damage</button>
+        <button onclick="check(4, 'D', this)">D. Bell's palsy</button>
+      </div>
+      <div class="feedback" id="feedback4"></div>
+    </div>
+
+    <div class="quiz-card" id="card5">
+      <h3>Case 5</h3>
+      <p class="vignette">A neurology resident is testing a patient with a suspected brainstem lesion. The patient's left arm and left leg are weak. The right side of his tongue deviates upon protrusion, and the right lower face droops. The forehead muscles are symmetric and intact. Where could a single lesion produce this combination?</p>
+      <div class="options" id="options5">
+        <button onclick="check(5, 'A', this)">A. Left internal capsule</button>
+        <button onclick="check(5, 'B', this)">B. Right cerebral peduncle</button>
+        <button onclick="check(5, 'C', this)">C. Left medullary pyramid above the decussation</button>
+        <button onclick="check(5, 'D', this)">D. Right medial medulla</button>
+      </div>
+      <div class="feedback" id="feedback5"></div>
+    </div>
+
+    <div class="quiz-card" id="card6">
+      <h3>Case 6</h3>
+      <p class="vignette">A researcher is studying gesture-speech coupling. A participant is asked to make sharp downward arm movements while sustaining a vowel. The researcher notices the vowel's amplitude spikes at the exact moment the arm decelerates. Which system is responsible for the limb movement creating this acoustic effect?</p>
+      <div class="options" id="options6">
+        <button onclick="check(6, 'A', this)">A. Corticobulbar tract</button>
+        <button onclick="check(6, 'B', this)">B. Reticular formation</button>
+        <button onclick="check(6, 'C', this)">C. Corticospinal tract</button>
+        <button onclick="check(6, 'D', this)">D. Nucleus ambiguus</button>
+      </div>
+      <div class="feedback" id="feedback6"></div>
+    </div>
+
     <div class="reset-wrap">
-      <button onclick="resetAll()">&#8634; Play Again</button>
+      <button onclick="resetAll()">PLAY AGAIN</button>
     </div>
 
     <div class="refs" style="margin-top:22px;">
@@ -323,6 +418,7 @@
 <script>
   var answered = {};
   var score = 0;
+  var streak = 0;
 
   function check(caseNum, choice, btn) {
     if (answered[caseNum]) return;
@@ -331,45 +427,58 @@
     var card = document.getElementById('card' + caseNum);
     var options = document.getElementById('options' + caseNum).children;
     var fb = document.getElementById('feedback' + caseNum);
-    var correctAnswer = caseNum === 1 ? 'B' : caseNum === 2 ? 'C' : 'C';
+
+    var answers = { 1:'B', 2:'C', 3:'C', 4:'C', 5:'D', 6:'C' };
+
+    var correctAnswer = answers[caseNum];
     var idx = choice === 'A' ? 0 : choice === 'B' ? 1 : choice === 'C' ? 2 : 3;
 
     for (var i = 0; i < options.length; i++) {
       options[i].disabled = true;
     }
 
-    if (choice === correctAnswer) {
-      score++;
-      document.getElementById('scoreNum').textContent = score;
-      document.getElementById('streakNum').textContent = score;
-      card.classList.add('cleared');
-    } else {
-      options[idx].classList.add('wrong');
-      document.getElementById('streakNum').textContent = '0';
-    }
-
     var correctBtn = options[correctAnswer === 'A' ? 0 : correctAnswer === 'B' ? 1 : correctAnswer === 'C' ? 2 : 3];
     correctBtn.classList.add('correct');
 
+    if (choice === correctAnswer) {
+      score++;
+      streak++;
+      document.getElementById('scoreNum').textContent = score;
+      document.getElementById('streakNum').textContent = streak;
+      card.classList.add('cleared');
+    } else {
+      options[idx].classList.add('wrong');
+      streak = 0;
+      document.getElementById('streakNum').textContent = '0';
+      card.classList.add('failed');
+      document.body.classList.add('shake');
+      setTimeout(function() { document.body.classList.remove('shake'); }, 400);
+    }
+
     var explanations = {
-      1: '<strong>Left corticobulbar tract.</strong> Contralateral lower facial droop and tongue deviation with no limb weakness rules out corticospinal. The forehead is spared, which means the lesion is upper motor neuron (corticobulbar), not the facial nerve itself. Most cranial nerve nuclei get bilateral input, but the lower face (CN VII) and tongue (CN XII) are wired contralaterally. A one-sided lesion hits them hard. Bilateral damage causes pseudobulbar palsy with spastic dysarthria.',
-      2: '<strong>Corticospinal tract.</strong> The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem.',
-      3: '<strong>Disrupted corticospinal and extrapyramidal postural control.</strong> Parkinson disease affects basal ganglia circuits, disrupting corticospinal and extrapyramidal (vestibulospinal, reticulospinal) postural systems. The stooped posture compresses the larynx and restricts diaphragmatic movement. Result: hypokinetic dysarthria with monopitch, monoloudness, and low intensity. The larynx is structurally intact.'
+      1: 'Left corticobulbar tract. Contralateral lower facial droop and tongue deviation with no limb weakness rules out corticospinal. The forehead is spared, meaning the lesion is upper motor neuron, not the facial nerve. Most cranial nerve nuclei get bilateral input, but the lower face (CN VII) and tongue (CN XII) are wired contralaterally.',
+      2: 'Corticospinal tract. The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem.',
+      3: 'Disrupted corticospinal and extrapyramidal postural control. Parkinson disease affects basal ganglia circuits, disrupting corticospinal and extrapyramidal (vestibulospinal, reticulospinal) postural systems. Stooped posture compresses the larynx and restricts diaphragmatic movement. Result: hypokinetic dysarthria. The larynx is structurally intact.',
+      4: 'Pseudobulbar palsy. Bilateral corticobulbar damage strips both hemispheres of control over the cranial nerve motor nuclei. The result is severe spastic dysarthria with slow, effortful speech, a spastic tongue, exaggerated jaw jerk, and emotional lability. This is the hallmark of bilateral UMN damage to the corticobulbar pathway.',
+      5: 'Right medial medulla. This is medial medullary syndrome. The left arm and leg are weak because the right medullary pyramid (corticospinal fibers) is damaged before the decussation, causing contralateral limb weakness. The right tongue deviates because the right hypoglossal nucleus or its exiting fibers are caught in the same lesion, causing ipsilateral tongue weakness. The corticobulbar fibers to the lower face have already exited above the medulla, so facial droop here is from a different mechanism.',
+      6: 'Corticospinal tract. The arm movement is driven by the corticospinal tract. When the arm decelerates sharply, the physical impulse travels through the trunk and briefly raises intrathoracic pressure. This pressure pulse increases acoustic amplitude at that moment. The effect is biomechanical, driven by the limb deceleration the corticospinal tract controls (Pouw et al., 2020).'
     };
 
-    fb.innerHTML = explanations[caseNum];
+    fb.innerHTML = '<strong>' + explanations[caseNum].split('. ')[0] + '.</strong> ' + explanations[caseNum].split('. ').slice(1).join('. ');
     fb.className = 'feedback show';
   }
 
   function resetAll() {
     answered = {};
     score = 0;
+    streak = 0;
     document.getElementById('scoreNum').textContent = '0';
     document.getElementById('streakNum').textContent = '0';
+    document.body.classList.remove('shake');
 
-    for (var c = 1; c <= 3; c++) {
+    for (var c = 1; c <= 6; c++) {
       var card = document.getElementById('card' + c);
-      card.classList.remove('cleared');
+      card.classList.remove('cleared', 'failed');
       var opts = document.getElementById('options' + c).children;
       for (var i = 0; i < opts.length; i++) {
         opts[i].disabled = false;
