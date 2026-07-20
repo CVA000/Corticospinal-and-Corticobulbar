@@ -316,9 +316,96 @@
     color: #ffcc00;
     box-shadow: 0 0 14px rgba(255,200,0,0.3);
   }
+
+  .overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.82);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    flex-direction: column;
+  }
+  .overlay.show {
+    display: flex;
+    animation: fadeOverlay 0.5s ease;
+  }
+  @keyframes fadeOverlay {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .results-box {
+    background: #12122a;
+    border: 4px solid #ffcc00;
+    border-radius: 14px;
+    padding: 36px 32px 28px 32px;
+    text-align: center;
+    max-width: 460px;
+    width: 90%;
+    box-shadow: 0 0 40px rgba(255,200,0,0.30), 0 0 80px rgba(255,140,0,0.15);
+    animation: resultsIn 0.5s ease;
+  }
+  @keyframes resultsIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .results-box .big-score {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 2.6rem;
+    color: #ffcc00;
+    text-shadow: 0 0 20px #ff8800, 0 0 40px #ff4400;
+    margin: 0 0 6px 0;
+  }
+  .results-box .out-of {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: #8899bb;
+    margin: 0 0 18px 0;
+  }
+  .results-box .rank {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    margin: 0 0 10px 0;
+    letter-spacing: 0.05em;
+  }
+  .results-box .flavor {
+    font-size: 0.9rem;
+    color: #cce0ff;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+  }
+  .results-box button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    padding: 12px 24px;
+    border: 2px solid #ffcc00;
+    background: #1a1a3a;
+    color: #ffcc00;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .results-box button:hover {
+    background: #ffcc00;
+    color: #0a0a12;
+    box-shadow: 0 0 20px rgba(255,200,0,0.5);
+  }
 </style>
 </head>
 <body>
+
+<div class="overlay" id="overlay">
+  <div class="results-box">
+    <div class="big-score" id="finalScore">0</div>
+    <div class="out-of">out of 6</div>
+    <div class="rank" id="finalRank"></div>
+    <div class="flavor" id="finalFlavor"></div>
+    <button onclick="closeOverlay()">PLAY AGAIN</button>
+  </div>
+</div>
 
 <div class="tv-frame">
   <div class="tv-antenna"></div>
@@ -466,28 +553,20 @@
 
     fb.innerHTML = '<strong>' + explanations[caseNum].split('. ')[0] + '.</strong> ' + explanations[caseNum].split('. ').slice(1).join('. ');
     fb.className = 'feedback show';
-  }
 
-  function resetAll() {
-    answered = {};
-    score = 0;
-    streak = 0;
-    document.getElementById('scoreNum').textContent = '0';
-    document.getElementById('streakNum').textContent = '0';
-    document.body.classList.remove('shake');
-
-    for (var c = 1; c <= 6; c++) {
-      var card = document.getElementById('card' + c);
-      card.classList.remove('cleared', 'failed');
-      var opts = document.getElementById('options' + c).children;
-      for (var i = 0; i < opts.length; i++) {
-        opts[i].disabled = false;
-        opts[i].classList.remove('correct', 'wrong');
-      }
-      document.getElementById('feedback' + c).className = 'feedback';
+    if (Object.keys(answered).length === 6) {
+      setTimeout(showResults, 900);
     }
   }
-</script>
 
-</body>
-</html>
+  function showResults() {
+    var overlay = document.getElementById('overlay');
+    document.getElementById('finalScore').textContent = score;
+
+    var rank, flavor, rankColor;
+
+    if (score === 6) {
+      rank = 'ATTENDING NEUROLOGIST';
+      rankColor = '#ffcc00';
+      flavor = 'Perfect score. You tracked every lesion from cortex to medulla without missing a single decussation. The corticospinal and corticobulbar tracts hold no secrets from you.';
+    } else if (
