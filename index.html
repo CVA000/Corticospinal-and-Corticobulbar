@@ -642,22 +642,22 @@
     var rank, flavor, rankColor;
 
     if (score === 6) {
-      rank = 'ATTENDING NEUROLOGIST';
+      rank = 'THE LESION WHISPERER';
       rankColor = '#ffcc00';
       flavor = 'Perfect score. Every lesion found, every tract named. The corticospinal and corticobulbar pathways have no surprises left.';
       startMarquee('green', 'LESIONS CLEARED');
     } else if (score >= 4) {
-      rank = 'CHIEF RESIDENT';
+      rank = 'DYSARTHRIA SPOTTER';
       rankColor = '#88ccff';
       flavor = 'Solid round. Most lesions localized, a couple slipped through. You know your way around the motor pathways.';
       startMarquee('red', 'ERROR  LESION MISSED');
     } else if (score >= 2) {
-      rank = 'JUNIOR RESIDENT';
+      rank = 'SUBGLOTTAL PRESSURE CHECKER';
       rankColor = '#ddaaff';
       flavor = 'A few hits, a few misses. The big picture is there but the tricky cases got you this time.';
       startMarquee('red', 'ERROR  LESION MISSED');
     } else {
-      rank = 'MED STUDENT YEAR ONE';
+      rank = 'KEEP AT IT';
       rankColor = '#ff99aa';
       flavor = 'Rough round. The tracts are tricky and they do not forgive. Another pass and you will have them.';
       startMarquee('red', 'ERROR  LESION MISSED');
