@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Corticospinal vs Corticobulbar</title>
+<style>
+  body {
+    margin: 0;
+    padding: 40px 20px;
+    background: #f5f5f5;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.6rem;
+    color: #1a1a1a;
+  }
+  .subtitle {
+    color: #555;
+    margin: 0 0 40px 0;
+    font-size: 0.95rem;
+  }
+  .demo-area {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    min-height: 500px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    overflow: hidden;
+  }
+  .btn-row {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 0;
+    padding: 24px 24px 0 24px;
+  }
+  .btn-row button {
+    padding: 12px 28px;
+    font-size: 1rem;
+    border: 2px solid #333;
+    background: white;
+    color: #333;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .btn-row button:hover {
+    background: #333;
+    color: white;
+  }
+  .btn-row button.active {
+    background: #222;
+    color: white;
+    border-color: #222;
+  }
+  .scene {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 60px;
+    padding: 40px 24px 20px 24px;
+    min-height: 280px;
+    position: relative;
+  }
+  .figure {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.5s ease;
+  }
+  .head {
+    width: 60px;
+    height: 70px;
+    background: #d4a574;
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+  .eye-left, .eye-right {
+    width: 8px;
+    height: 8px;
+    background: #1a1a1a;
+    border-radius: 50%;
+    position: absolute;
+    top: 22px;
+  }
+  .eye-left { left: 14px; }
+  .eye-right { right: 14px; }
+  .mouth {
+    width: 22px;
+    height: 6px;
+    border-bottom: 2px solid #1a1a1a;
+    border-radius: 0 0 8px 8px;
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease;
+  }
+  .mouth.droop {
+    width: 26px;
+    border-radius: 0 0 2px 10px;
+    transform: translateX(-50%) rotate(-8deg);
+    border-bottom-width: 2.5px;
+  }
+  .tongue {
+    width: 16px;
+    height: 10px;
+    background: #e07070;
+    border-radius: 4px;
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: all 0.5s ease;
+    opacity: 0;
+  }
+  .tongue.deviate {
+    opacity: 1;
+    transform: translateX(calc(-50% + 14px));
+  }
+  .torso {
+    width: 50px;
+    height: 90px;
+    background: #3a7ca5;
+    border-radius: 8px 8px 2px 2px;
+    margin-top: 4px;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+  .torso.slump {
+    transform: rotate(12deg);
+    height: 82px;
+    margin-top: 12px;
+  }
+  .arms {
+    position: absolute;
+    top: 10px;
+    left: -22px;
+    width: 94px;
+    height: 40px;
+    transition: all 0.5s ease;
+  }
+  .arms.slump {
+    transform: rotate(8deg) translateY(8px);
+  }
+  .arm-line {
+    stroke: #3a7ca5;
+    stroke-width: 10;
+    stroke-linecap: round;
+  }
+  .label {
+    margin-top: 16px;
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  .path-line {
+    position: absolute;
+    top: 50%;
+    left: -80px;
+    right: -80px;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .path-line.show {
+    opacity: 1;
+  }
+  .info-panel {
+    padding: 0 24px 24px 24px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .info-panel p {
+    margin: 6px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #333;
+  }
+  .info-panel .tract-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+  .info-panel .highlight {
+    background: #fff3cd;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border-left: 3px solid #e6a817;
+    margin-top: 12px;
+  }
+  .info-panel .highlight.bad {
+    background: #fde8e8;
+    border-left-color: #c53030;
+  }
+  .reset-hint {
+    margin-top: 14px;
+    font-size: 0.8rem;
+    color: #888;
+  }
+  svg.spine {
+    position: absolute;
+  }
+  @media (max-width: 600px) {
+    .scene {
+      gap: 30px;
+      padding: 30px 12px 16px 12px;
+    }
+    .info-panel {
+      padding: 0 12px 20px 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Corticospinal vs Corticobulbar</h1>
+<p class="subtitle">Click a tract to see what happens when it's damaged.</p>
+
+<div class="demo-area">
+  <div class="btn-row">
+    <button id="btnSpinal" onclick="showSpinal()">Corticospinal Lesion</button>
+    <button id="btnBulbar" onclick="showBulbar()">Corticobulbar Lesion</button>
+  </div>
+
+  <div class="scene">
+    <div class="figure" id="figSpinal">
+      <div class="head">
+        <div class="eye-left"></div>
+        <div class="eye-right"></div>
+        <div class="mouth"></div>
+        <div class="tongue"></div>
+      </div>
+      <svg class="arms" id="armsSpinal" width="94" height="40" viewBox="0 0 94 40">
+        <line class="arm-line" x1="0" y1="20" x2="47" y2="10"/>
+        <line class="arm-line" x1="47" y1="10" x2="94" y2="20"/>
+      </svg>
+      <div class="torso" id="torsoSpinal"></div>
+      <div class="label">Corticospinal<br><span style="font-size:0.75rem">posture &amp; respiration</span></div>
+    </div>
+
+    <div class="figure" id="figBulbar">
+      <div class="head">
+        <div class="eye-left"></div>
+        <div class="eye-right"></div>
+        <div class="mouth" id="mouthBulbar"></div>
+        <div class="tongue" id="tongueBulbar"></div>
+      </div>
+      <svg class="arms" width="94" height="40" viewBox="0 0 94 40">
+        <line class="arm-line" x1="0" y1="20" x2="47" y2="10"/>
+        <line class="arm-line" x1="47" y1="10" x2="94" y2="20"/>
+      </svg>
+      <div class="torso"></div>
+      <div class="label">Corticobulbar<br><span style="font-size:0.75rem">face &amp; articulation</span></div>
+    </div>
+  </div>
+
+  <div class="info-panel" id="infoPanel">
+    <p style="color:#888">Click a button above to see the effect of each lesion.</p>
+  </div>
+</div>
+
+<script>
+  var btnSpinal = document.getElementById('btnSpinal');
+  var btnBulbar = document.getElementById('btnBulbar');
+  var torsoSpinal = document.getElementById('torsoSpinal');
+  var armsSpinal = document.getElementById('armsSpinal');
+  var mouthBulbar = document.getElementById('mouthBulbar');
+  var tongueBulbar = document.getElementById('tongueBulbar');
+  var infoPanel = document.getElementById('infoPanel');
+  var figSpinal = document.getElementById('figSpinal');
+  var figBulbar = document.getElementById('figBulbar');
+
+  function resetAll() {
+    btnSpinal.classList.remove('active');
+    btnBulbar.classList.remove('active');
+    torsoSpinal.classList.remove('slump');
+    armsSpinal.classList.remove('slump');
+    mouthBulbar.classList.remove('droop');
+    tongueBulbar.classList.remove('deviate');
+    figSpinal.style.opacity = '1';
+    figBulbar.style.opacity = '1';
+  }
+
+  function showSpinal() {
+    resetAll();
+    btnSpinal.classList.add('active');
+    torsoSpinal.classList.add('slump');
+    armsSpinal.classList.add('slump');
+    figBulbar.style.opacity = '0.3';
+    infoPanel.innerHTML =
+      '<p class="tract-name">Corticospinal Tract Lesion</p>' +
+      '<p>Damage here affects the <strong>body highway</strong>. Arms, legs, and trunk muscles lose fine motor control on the contralateral side. But the cranial nerves are spared. The face works fine.</p>' +
+      '<div class="highlight bad">' +
+      '<p style="margin:0"><strong>Speech impact (indirect):</strong> The diaphragm and intercostals lose voluntary control. Subglottal pressure drops. The patient produces short phrases with reduced loudness and a breathy voice. Posture collapses, which compresses the larynx and restricts pitch range. The articulators themselves are intact but they have no stable platform or steady air supply to work with.</p>' +
+      '</div>' +
+      '<div class="highlight">' +
+      '<p style="margin:0"><strong>Key detail:</strong> About 90% of corticospinal fibers decussate at the pyramidal decussation in the lower medulla. A lesion above the decussation causes contralateral weakness. A lesion below it causes ipsilateral weakness.</p>' +
+      '</div>' +
+      '<p class="reset-hint">Click the other button to compare.</p>';
+  }
+
+  function showBulbar() {
+    resetAll();
+    btnBulbar.classList.add('active');
+    mouthBulbar.classList.add('droop');
+    tongueBulbar.classList.add('deviate');
+    figSpinal.style.opacity = '0.3';
+    infoPanel.innerHTML =
+      '<p class="tract-name">Corticobulbar Tract Lesion</p>' +
+      '<p>Damage here affects the <strong>face highway</strong>. Cranial nerve nuclei lose upper motor neuron input. Most nuclei get bilateral innervation, so a one-sided lesion spares many functions. But two places take a direct hit.</p>' +
+      '<div class="highlight bad">' +
+      '<p style="margin:0"><strong>Speech impact (direct):</strong> The lower face (CN VII) is wired contralaterally, so the mouth droops on the opposite side. Bilabial sounds like /p/, /b/, and /m/ become distorted because the lips cannot seal. The tongue (CN XII) is also contralateral, so it deviates toward the weak side on protrusion. Lingual sounds like /t/, /d/, /s/, and /l/ turn slushy. Bilateral damage produces spastic dysarthria with a strained-strangled voice.</p>' +
+      '</div>' +
+      '<div class="highlight">' +
+      '<p style="margin:0"><strong>Key detail:</strong> The upper face gets bilateral input, so forehead muscles and eye closure are spared in a unilateral lesion. Only the lower face droops. This is a classic sign that the problem is in the upper motor neuron pathway, not the facial nerve itself.</p>' +
+      '</div>' +
+      '<p class="reset-hint">Click the other button to compare.</p>';
+  }
+</script>
+
+</body>
+</html>
