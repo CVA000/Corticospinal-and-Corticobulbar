@@ -323,22 +323,23 @@
     white-space: nowrap;
     font-family: 'Press Start 2P', monospace;
     font-size: 0.7rem;
-    opacity: 0.35;
     letter-spacing: 0.06em;
   }
   .bg-marquee.red .row {
-    color: #ff3344;
-    text-shadow: 0 0 6px #ff0000;
+    color: #ff4466;
+    text-shadow: 0 0 10px #ff2244, 0 0 20px #ff0022;
+    opacity: 0.7;
   }
   .bg-marquee.green .row {
-    color: #33ff66;
-    text-shadow: 0 0 6px #00ff44;
+    color: #44ff88;
+    text-shadow: 0 0 10px #22ff66, 0 0 20px #00ff44;
+    opacity: 0.7;
   }
 
   .overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85);
+    background: rgba(4,4,15,0.72);
     display: none;
     justify-content: center;
     align-items: center;
@@ -361,7 +362,7 @@
     text-align: center;
     max-width: 460px;
     width: 90%;
-    box-shadow: 0 0 40px rgba(255,200,0,0.30), 0 0 80px rgba(255,140,0,0.15);
+    box-shadow: 0 0 40px rgba(255,200,0,0.35), 0 0 80px rgba(255,140,0,0.20), 0 0 0 12px rgba(0,0,0,0.3);
     animation: resultsIn 0.5s ease;
   }
   @keyframes resultsIn {
@@ -387,9 +388,10 @@
     font-size: 0.7rem;
     margin: 0 0 10px 0;
     letter-spacing: 0.05em;
+    line-height: 1.5;
   }
   .results-box .flavor {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #cce0ff;
     line-height: 1.6;
     margin: 0 0 24px 0;
@@ -634,22 +636,22 @@
     if (score === 6) {
       rank = 'ATTENDING NEUROLOGIST';
       rankColor = '#ffcc00';
-      flavor = 'Perfect score. You tracked every lesion from cortex to medulla without missing a single decussation. The corticospinal and corticobulbar tracts hold no secrets from you.';
+      flavor = 'Perfect score. Every lesion found, every tract named. The corticospinal and corticobulbar pathways have no surprises left.';
       startMarquee('green', 'LESIONS CLEARED');
     } else if (score >= 4) {
       rank = 'CHIEF RESIDENT';
       rankColor = '#88ccff';
-      flavor = 'Solid work. You caught most of the lesions but a couple slipped past. Review the exceptions to bilateral corticobulbar innervation and you will nail the next round.';
+      flavor = 'Solid round. Most lesions localized, a couple slipped through. You know your way around the motor pathways.';
       startMarquee('red', 'ERROR  LESION MISSED');
     } else if (score >= 2) {
       rank = 'JUNIOR RESIDENT';
       rankColor = '#ddaaff';
-      flavor = 'A few hits, a few misses. You know the big picture but the tricky cases got you. Spend some time with the decussation and the indirect respiratory pathway.';
+      flavor = 'A few hits, a few misses. The big picture is there but the tricky cases got you this time.';
       startMarquee('red', 'ERROR  LESION MISSED');
     } else {
       rank = 'MED STUDENT YEAR ONE';
       rankColor = '#ff99aa';
-      flavor = 'Rough round. The tracts are unforgiving. Go back to the anatomy: corticospinal handles the body and breath, corticobulbar handles the face and articulation. You will get there.';
+      flavor = 'Rough round. The tracts are tricky and they do not forgive. Another pass and you will have them.';
       startMarquee('red', 'ERROR  LESION MISSED');
     }
 
