@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LESION LOCATOR</title>
+<title>TRACT TRACER</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -432,8 +432,8 @@
 <div class="tv-frame">
   <div class="tv-antenna"></div>
   <div class="tv-screen">
-    <h1>LESION LOCATOR</h1>
-    <p class="subtitle">Six patients enter.<br>You find the lesion.</p>
+    <h1>TRACT TRACER</h1>
+    <p class="subtitle">Six cases enter.<br>You trace the tract.</p>
 
     <div class="scoreboard">
       <div class="score-item"><span class="num" id="scoreNum">0</span>CLEARED</div>
@@ -642,25 +642,25 @@
     var rank, flavor, rankColor;
 
     if (score === 6) {
-      rank = 'THE LESION WHISPERER';
+      rank = 'THE TRACT WHISPERER';
       rankColor = '#ffcc00';
-      flavor = 'Perfect score. Every lesion found, every tract named. The corticospinal and corticobulbar pathways have no surprises left.';
-      startMarquee('green', 'LESIONS CLEARED');
+      flavor = 'Perfect score. Every case solved, every tract named.';
+      startMarquee('green', 'TRACTS TRACED');
     } else if (score >= 4) {
-      rank = 'DYSARTHRIA SPOTTER';
+      rank = 'ON THE RIGHT TRACT';
       rankColor = '#88ccff';
-      flavor = 'Solid round. Most lesions localized, a couple slipped through. You know your way around the motor pathways.';
-      startMarquee('red', 'ERROR  LESION MISSED');
+      flavor = 'Solid round. You know your way around the motor pathways.';
+      startMarquee('red', 'ERROR  TRACT MISSED');
     } else if (score >= 2) {
-      rank = 'SUBGLOTTAL PRESSURE CHECKER';
+      rank = 'CROSSED WIRES';
       rankColor = '#ddaaff';
-      flavor = 'A few hits, a few misses. The big picture is there but the tricky cases got you this time.';
-      startMarquee('red', 'ERROR  LESION MISSED');
+      flavor = 'A few hits, a few misses. The big picture is there.';
+      startMarquee('red', 'ERROR  TRACT MISSED');
     } else {
       rank = 'KEEP AT IT';
       rankColor = '#ff99aa';
-      flavor = 'Rough round. The tracts are tricky and they do not forgive. Another pass and you will have them.';
-      startMarquee('red', 'ERROR  LESION MISSED');
+      flavor = 'Keep at it. The tracts take practice.';
+      startMarquee('red', 'ERROR  TRACT MISSED');
     }
 
     document.getElementById('finalRank').textContent = rank;
