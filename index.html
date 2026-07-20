@@ -30,17 +30,16 @@
     position: relative;
     width: 100%;
     max-width: 700px;
-    min-height: 500px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     overflow: hidden;
+    margin-bottom: 30px;
   }
   .btn-row {
     display: flex;
     gap: 16px;
     justify-content: center;
-    margin-bottom: 0;
     padding: 24px 24px 0 24px;
   }
   .btn-row button {
@@ -64,19 +63,23 @@
   }
   .scene {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: center;
-    gap: 60px;
-    padding: 40px 24px 20px 24px;
-    min-height: 280px;
-    position: relative;
+    gap: 80px;
+    padding: 40px 24px 30px 24px;
+    min-height: 320px;
   }
   .figure {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: all 0.5s ease;
+    width: 140px;
+    transition: opacity 0.4s ease;
+  }
+  .head-wrapper {
+    width: 60px;
+    height: 70px;
+    position: relative;
   }
   .head {
     width: 60px;
@@ -129,54 +132,33 @@
     opacity: 1;
     transform: translateX(calc(-50% + 14px));
   }
+  .arms-wrap {
+    width: 94px;
+    height: 40px;
+    margin-top: 0;
+    transition: all 0.5s ease;
+  }
+  .arms-wrap.slump {
+    transform: rotate(8deg) translateY(6px);
+  }
   .torso {
     width: 50px;
     height: 90px;
     background: #3a7ca5;
     border-radius: 8px 8px 2px 2px;
-    margin-top: 4px;
     position: relative;
     transition: all 0.5s ease;
   }
   .torso.slump {
     transform: rotate(12deg);
     height: 82px;
-    margin-top: 12px;
-  }
-  .arms {
-    position: absolute;
-    top: 10px;
-    left: -22px;
-    width: 94px;
-    height: 40px;
-    transition: all 0.5s ease;
-  }
-  .arms.slump {
-    transform: rotate(8deg) translateY(8px);
-  }
-  .arm-line {
-    stroke: #3a7ca5;
-    stroke-width: 10;
-    stroke-linecap: round;
   }
   .label {
     margin-top: 16px;
     font-size: 0.85rem;
     color: #666;
     text-align: center;
-    transition: all 0.3s ease;
-  }
-  .path-line {
-    position: absolute;
-    top: 50%;
-    left: -80px;
-    right: -80px;
-    height: 3px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  .path-line.show {
-    opacity: 1;
+    min-height: 38px;
   }
   .info-panel {
     padding: 0 24px 24px 24px;
@@ -210,16 +192,29 @@
     font-size: 0.8rem;
     color: #888;
   }
-  svg.spine {
-    position: absolute;
+  .refs {
+    max-width: 700px;
+    width: 100%;
+    padding: 0 24px;
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.6;
+  }
+  .refs p {
+    margin: 2px 0;
+    text-indent: -20px;
+    padding-left: 20px;
   }
   @media (max-width: 600px) {
     .scene {
       gap: 30px;
-      padding: 30px 12px 16px 12px;
+      padding: 30px 12px 20px 12px;
     }
     .info-panel {
       padding: 0 12px 20px 12px;
+    }
+    .refs {
+      padding: 0 12px;
     }
   }
 </style>
@@ -237,31 +232,39 @@
 
   <div class="scene">
     <div class="figure" id="figSpinal">
-      <div class="head">
-        <div class="eye-left"></div>
-        <div class="eye-right"></div>
-        <div class="mouth"></div>
-        <div class="tongue"></div>
+      <div class="head-wrapper">
+        <div class="head">
+          <div class="eye-left"></div>
+          <div class="eye-right"></div>
+          <div class="mouth"></div>
+          <div class="tongue"></div>
+        </div>
       </div>
-      <svg class="arms" id="armsSpinal" width="94" height="40" viewBox="0 0 94 40">
-        <line class="arm-line" x1="0" y1="20" x2="47" y2="10"/>
-        <line class="arm-line" x1="47" y1="10" x2="94" y2="20"/>
-      </svg>
+      <div class="arms-wrap" id="armsSpinal">
+        <svg width="94" height="40" viewBox="0 0 94 40">
+          <line x1="0" y1="20" x2="47" y2="10" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
+          <line x1="47" y1="10" x2="94" y2="20" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="torso" id="torsoSpinal"></div>
       <div class="label">Corticospinal<br><span style="font-size:0.75rem">posture &amp; respiration</span></div>
     </div>
 
     <div class="figure" id="figBulbar">
-      <div class="head">
-        <div class="eye-left"></div>
-        <div class="eye-right"></div>
-        <div class="mouth" id="mouthBulbar"></div>
-        <div class="tongue" id="tongueBulbar"></div>
+      <div class="head-wrapper">
+        <div class="head">
+          <div class="eye-left"></div>
+          <div class="eye-right"></div>
+          <div class="mouth" id="mouthBulbar"></div>
+          <div class="tongue" id="tongueBulbar"></div>
+        </div>
       </div>
-      <svg class="arms" width="94" height="40" viewBox="0 0 94 40">
-        <line class="arm-line" x1="0" y1="20" x2="47" y2="10"/>
-        <line class="arm-line" x1="47" y1="10" x2="94" y2="20"/>
-      </svg>
+      <div class="arms-wrap">
+        <svg width="94" height="40" viewBox="0 0 94 40">
+          <line x1="0" y1="20" x2="47" y2="10" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
+          <line x1="47" y1="10" x2="94" y2="20" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
+        </svg>
+      </div>
       <div class="torso"></div>
       <div class="label">Corticobulbar<br><span style="font-size:0.75rem">face &amp; articulation</span></div>
     </div>
@@ -270,6 +273,12 @@
   <div class="info-panel" id="infoPanel">
     <p style="color:#888">Click a button above to see the effect of each lesion.</p>
   </div>
+</div>
+
+<div class="refs">
+  <p>Andreatta, R. D. (2023). <em>Neuroscience fundamentals for communication sciences and disorders</em> (2nd ed.). Plural Publishing.</p>
+  <p>Pouw, W., Harrison, S. J., Esteve-Gibert, N., &amp; Dixon, J. A. (2020). Energy flows in gesture-speech physics. <em>JASA, 148</em>(3), 1231&ndash;1247.</p>
+  <p>Pulliam, W. (2026). <em>Neuroscience 3WW-CRN 41452</em> [PowerPoint slides]. ENMU.</p>
 </div>
 
 <script>
@@ -302,12 +311,12 @@
     figBulbar.style.opacity = '0.3';
     infoPanel.innerHTML =
       '<p class="tract-name">Corticospinal Tract Lesion</p>' +
-      '<p>Damage here affects the <strong>body highway</strong>. Arms, legs, and trunk muscles lose fine motor control on the contralateral side. But the cranial nerves are spared. The face works fine.</p>' +
+      '<p>The corticospinal tract is the body highway. It runs from the motor cortex through the internal capsule, cerebral peduncles, and pons, then about 90% of fibers decussate at the pyramidal decussation in the lower medulla to form the lateral corticospinal tract (Andreatta, 2023). The anterior branch stays ipsilateral and controls axial muscles for posture and balance.</p>' +
       '<div class="highlight bad">' +
-      '<p style="margin:0"><strong>Speech impact (indirect):</strong> The diaphragm and intercostals lose voluntary control. Subglottal pressure drops. The patient produces short phrases with reduced loudness and a breathy voice. Posture collapses, which compresses the larynx and restricts pitch range. The articulators themselves are intact but they have no stable platform or steady air supply to work with.</p>' +
+      '<p style="margin:0"><strong>Speech is affected indirectly.</strong> The tract drives the diaphragm (C3&ndash;C5) and intercostals (T1&ndash;T11) for voluntary breath control. Damage strips away volitional respiratory support, so subglottal pressure drops. The patient produces short phrases with reduced loudness and a breathy voice. Posture collapses, compressing the larynx and restricting pitch range. The articulators are intact but the air supply and stable platform are gone (Andreatta, 2023).</p>' +
       '</div>' +
       '<div class="highlight">' +
-      '<p style="margin:0"><strong>Key detail:</strong> About 90% of corticospinal fibers decussate at the pyramidal decussation in the lower medulla. A lesion above the decussation causes contralateral weakness. A lesion below it causes ipsilateral weakness.</p>' +
+      '<p style="margin:0"><strong>Clinical note:</strong> A cervical spinal cord injury at C3&ndash;C5 damages the phrenic motor neurons and eliminates volitional vocalization. In Parkinson&rsquo;s disease, disrupted postural control produces a stooped stance that contributes to hypokinetic dysarthria: monopitch, monoloudness, and reduced intensity.</p>' +
       '</div>' +
       '<p class="reset-hint">Click the other button to compare.</p>';
   }
@@ -320,12 +329,12 @@
     figSpinal.style.opacity = '0.3';
     infoPanel.innerHTML =
       '<p class="tract-name">Corticobulbar Tract Lesion</p>' +
-      '<p>Damage here affects the <strong>face highway</strong>. Cranial nerve nuclei lose upper motor neuron input. Most nuclei get bilateral innervation, so a one-sided lesion spares many functions. But two places take a direct hit.</p>' +
+      '<p>The corticobulbar tract is the face highway. It follows the same initial path through the corona radiata and internal capsule, then fibers peel off at different brainstem levels to synapse on cranial nerve motor nuclei (Andreatta, 2023). Most nuclei get bilateral input, but three critical exceptions are wired contralaterally: the lower face (CN VII), the tongue (CN XII), and the trigeminal motor nucleus.</p>' +
       '<div class="highlight bad">' +
-      '<p style="margin:0"><strong>Speech impact (direct):</strong> The lower face (CN VII) is wired contralaterally, so the mouth droops on the opposite side. Bilabial sounds like /p/, /b/, and /m/ become distorted because the lips cannot seal. The tongue (CN XII) is also contralateral, so it deviates toward the weak side on protrusion. Lingual sounds like /t/, /d/, /s/, and /l/ turn slushy. Bilateral damage produces spastic dysarthria with a strained-strangled voice.</p>' +
+      '<p style="margin:0"><strong>Speech is affected directly.</strong> The lower face droops contralaterally because CN VII lower division only gets input from the opposite hemisphere. Bilabial sounds like /p/, /b/, and /m/ distort as air escapes the weak side. The tongue deviates toward the weak side on protrusion because CN XII is predominantly contralateral. Lingual sounds like /t/, /d/, /s/, /z/, /l/, and /n/ lose precision and become slushy. Bilateral damage to nucleus ambiguus (CN X) produces spastic dysarthria with a strained-strangled voice (Andreatta, 2023).</p>' +
       '</div>' +
       '<div class="highlight">' +
-      '<p style="margin:0"><strong>Key detail:</strong> The upper face gets bilateral input, so forehead muscles and eye closure are spared in a unilateral lesion. Only the lower face droops. This is a classic sign that the problem is in the upper motor neuron pathway, not the facial nerve itself.</p>' +
+      '<p style="margin:0"><strong>Clinical note:</strong> The upper face is spared in a unilateral lesion because it gets bilateral input. A patient can wrinkle the forehead and close both eyes but cannot smile or purse the lips on the weak side. Bilateral corticobulbar damage causes pseudobulbar palsy with slow, effortful speech and a spastic tongue.</p>' +
       '</div>' +
       '<p class="reset-hint">Click the other button to compare.</p>';
   }
