@@ -26,13 +26,7 @@
     content: '';
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(0,0,0,0.10) 0px,
-      rgba(0,0,0,0.10) 2px,
-      transparent 2px,
-      transparent 4px
-    );
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.10) 0px, rgba(0,0,0,0.10) 2px, transparent 2px, transparent 4px);
     pointer-events: none;
     z-index: 999;
   }
@@ -56,11 +50,7 @@
     border-radius: 24px;
     padding: 0;
     background: #12121f;
-    box-shadow:
-      0 0 0 4px #1a1a2e,
-      0 0 0 10px #0e0e18,
-      0 0 40px rgba(180, 80, 255, 0.25),
-      inset 0 0 60px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 4px #1a1a2e, 0 0 0 10px #0e0e18, 0 0 40px rgba(180,80,255,0.25), inset 0 0 60px rgba(0,0,0,0.5);
     max-width: 680px;
     width: 100%;
     position: relative;
@@ -317,10 +307,38 @@
     box-shadow: 0 0 14px rgba(255,200,0,0.3);
   }
 
+  .bg-marquee {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 997;
+    display: none;
+    overflow: hidden;
+  }
+  .bg-marquee.active {
+    display: block;
+  }
+  .bg-marquee .row {
+    position: absolute;
+    white-space: nowrap;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.7rem;
+    opacity: 0.35;
+    letter-spacing: 0.06em;
+  }
+  .bg-marquee.red .row {
+    color: #ff3344;
+    text-shadow: 0 0 6px #ff0000;
+  }
+  .bg-marquee.green .row {
+    color: #33ff66;
+    text-shadow: 0 0 6px #00ff44;
+  }
+
   .overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.82);
+    background: rgba(0,0,0,0.85);
     display: none;
     justify-content: center;
     align-items: center;
@@ -396,6 +414,8 @@
 </style>
 </head>
 <body>
+
+<div class="bg-marquee" id="bgMarquee"></div>
 
 <div class="overlay" id="overlay">
   <div class="results-box">
@@ -506,6 +526,7 @@
   var answered = {};
   var score = 0;
   var streak = 0;
+  var marqueeTimer = null;
 
   function check(caseNum, choice, btn) {
     if (answered[caseNum]) return;
@@ -514,9 +535,7 @@
     var card = document.getElementById('card' + caseNum);
     var options = document.getElementById('options' + caseNum).children;
     var fb = document.getElementById('feedback' + caseNum);
-
     var answers = { 1:'B', 2:'C', 3:'C', 4:'C', 5:'D', 6:'C' };
-
     var correctAnswer = answers[caseNum];
     var idx = choice === 'A' ? 0 : choice === 'B' ? 1 : choice === 'C' ? 2 : 3;
 
@@ -547,7 +566,7 @@
       2: 'Corticospinal tract. The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem.',
       3: 'Disrupted corticospinal and extrapyramidal postural control. Parkinson disease affects basal ganglia circuits, disrupting corticospinal and extrapyramidal (vestibulospinal, reticulospinal) postural systems. Stooped posture compresses the larynx and restricts diaphragmatic movement. Result: hypokinetic dysarthria. The larynx is structurally intact.',
       4: 'Pseudobulbar palsy. Bilateral corticobulbar damage strips both hemispheres of control over the cranial nerve motor nuclei. The result is severe spastic dysarthria with slow, effortful speech, a spastic tongue, exaggerated jaw jerk, and emotional lability. This is the hallmark of bilateral UMN damage to the corticobulbar pathway.',
-      5: 'Right medial medulla. This is medial medullary syndrome. The left arm and leg are weak because the right medullary pyramid (corticospinal fibers) is damaged before the decussation, causing contralateral limb weakness. The right tongue deviates because the right hypoglossal nucleus or its exiting fibers are caught in the same lesion, causing ipsilateral tongue weakness. The corticobulbar fibers to the lower face have already exited above the medulla, so facial droop here is from a different mechanism.',
+      5: 'Right medial medulla. This is medial medullary syndrome. The left arm and leg are weak because the right medullary pyramid (corticospinal fibers) is damaged before the decussation, causing contralateral limb weakness. The right tongue deviates because the right hypoglossal nucleus or its exiting fibers are caught in the same lesion, causing ipsilateral tongue weakness.',
       6: 'Corticospinal tract. The arm movement is driven by the corticospinal tract. When the arm decelerates sharply, the physical impulse travels through the trunk and briefly raises intrathoracic pressure. This pressure pulse increases acoustic amplitude at that moment. The effect is biomechanical, driven by the limb deceleration the corticospinal tract controls (Pouw et al., 2020).'
     };
 
@@ -557,6 +576,53 @@
     if (Object.keys(answered).length === 6) {
       setTimeout(showResults, 900);
     }
+  }
+
+  function startMarquee(colorClass, text) {
+    var el = document.getElementById('bgMarquee');
+    el.innerHTML = '';
+    el.className = 'bg-marquee active ' + colorClass;
+
+    var rowCount = 18;
+    var rowHeight = Math.ceil(window.innerHeight / rowCount);
+
+    for (var i = 0; i < rowCount; i++) {
+      var row = document.createElement('div');
+      row.className = 'row';
+      row.textContent = text + '   ' + text + '   ' + text + '   ' + text + '   ' + text + '   ' + text + '   ';
+      row.style.top = (i * rowHeight) + 'px';
+      row.style.fontSize = (0.55 + (i % 3) * 0.1) + 'rem';
+      el.appendChild(row);
+    }
+
+    var rows = el.querySelectorAll('.row');
+    var offsets = [];
+    for (var j = 0; j < rows.length; j++) {
+      offsets.push((j % 4) * 60);
+    }
+
+    function tick() {
+      for (var k = 0; k < rows.length; k++) {
+        offsets[k] -= 0.8;
+        if (offsets[k] < -window.innerWidth) offsets[k] = window.innerWidth + 200;
+        var x = offsets[k];
+        var y = parseFloat(rows[k].style.top);
+        rows[k].style.transform = 'translate(' + x + 'px, ' + (Math.sin(x * 0.02 + k * 0.4) * 18) + 'px)';
+      }
+      marqueeTimer = requestAnimationFrame(tick);
+    }
+
+    tick();
+  }
+
+  function stopMarquee() {
+    if (marqueeTimer) {
+      cancelAnimationFrame(marqueeTimer);
+      marqueeTimer = null;
+    }
+    var el = document.getElementById('bgMarquee');
+    el.className = 'bg-marquee';
+    el.innerHTML = '';
   }
 
   function showResults() {
@@ -569,4 +635,57 @@
       rank = 'ATTENDING NEUROLOGIST';
       rankColor = '#ffcc00';
       flavor = 'Perfect score. You tracked every lesion from cortex to medulla without missing a single decussation. The corticospinal and corticobulbar tracts hold no secrets from you.';
-    } else if (
+      startMarquee('green', 'LESIONS CLEARED');
+    } else if (score >= 4) {
+      rank = 'CHIEF RESIDENT';
+      rankColor = '#88ccff';
+      flavor = 'Solid work. You caught most of the lesions but a couple slipped past. Review the exceptions to bilateral corticobulbar innervation and you will nail the next round.';
+      startMarquee('red', 'ERROR  LESION MISSED');
+    } else if (score >= 2) {
+      rank = 'JUNIOR RESIDENT';
+      rankColor = '#ddaaff';
+      flavor = 'A few hits, a few misses. You know the big picture but the tricky cases got you. Spend some time with the decussation and the indirect respiratory pathway.';
+      startMarquee('red', 'ERROR  LESION MISSED');
+    } else {
+      rank = 'MED STUDENT YEAR ONE';
+      rankColor = '#ff99aa';
+      flavor = 'Rough round. The tracts are unforgiving. Go back to the anatomy: corticospinal handles the body and breath, corticobulbar handles the face and articulation. You will get there.';
+      startMarquee('red', 'ERROR  LESION MISSED');
+    }
+
+    document.getElementById('finalRank').textContent = rank;
+    document.getElementById('finalRank').style.color = rankColor;
+    document.getElementById('finalFlavor').textContent = flavor;
+    overlay.classList.add('show');
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlay').classList.remove('show');
+    stopMarquee();
+    resetAll();
+  }
+
+  function resetAll() {
+    answered = {};
+    score = 0;
+    streak = 0;
+    document.getElementById('scoreNum').textContent = '0';
+    document.getElementById('streakNum').textContent = '0';
+    document.body.classList.remove('shake');
+    stopMarquee();
+
+    for (var c = 1; c <= 6; c++) {
+      var card = document.getElementById('card' + c);
+      card.classList.remove('cleared', 'failed');
+      var opts = document.getElementById('options' + c).children;
+      for (var i = 0; i < opts.length; i++) {
+        opts[i].disabled = false;
+        opts[i].classList.remove('correct', 'wrong');
+      }
+      document.getElementById('feedback' + c).className = 'feedback';
+    }
+  }
+</script>
+
+</body>
+</html>
