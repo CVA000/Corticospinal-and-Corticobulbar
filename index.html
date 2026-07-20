@@ -3,340 +3,380 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Corticospinal vs Corticobulbar</title>
+<title>LESION LOCATOR!!</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
   body {
     margin: 0;
-    padding: 40px 20px;
-    background: #f5f5f5;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 30px 20px 50px 20px;
+    background: #0a0a12;
+    font-family: 'Courier New', monospace;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     box-sizing: border-box;
-  }
-  h1 {
-    margin: 0 0 8px 0;
-    font-size: 1.6rem;
-    color: #1a1a1a;
-  }
-  .subtitle {
-    color: #555;
-    margin: 0 0 40px 0;
-    font-size: 0.95rem;
-  }
-  .demo-area {
+    color: #e0e0ff;
     position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(0,0,0,0.12) 0px,
+      rgba(0,0,0,0.12) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .tv-frame {
+    border: 14px solid #2a2a3a;
+    border-radius: 24px;
+    padding: 0;
+    background: #12121f;
+    box-shadow:
+      0 0 0 4px #1a1a2e,
+      0 0 0 10px #0e0e18,
+      0 0 40px rgba(180, 80, 255, 0.25),
+      inset 0 0 60px rgba(0,0,0,0.5);
+    max-width: 680px;
     width: 100%;
-    max-width: 700px;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    overflow: hidden;
+    position: relative;
     margin-bottom: 30px;
   }
-  .btn-row {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    padding: 24px 24px 0 24px;
+
+  .tv-screen {
+    padding: 30px 24px 20px 24px;
+    position: relative;
+    border-radius: 12px;
+    background: radial-gradient(ellipse at center, #16162a 0%, #0c0c1a 100%);
   }
-  .btn-row button {
-    padding: 12px 28px;
-    font-size: 1rem;
-    border: 2px solid #333;
-    background: white;
-    color: #333;
+
+  .tv-antenna {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 40px;
+    background: #3a3a5a;
+    border-radius: 3px 3px 0 0;
+  }
+  .tv-antenna::after {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: -8px;
+    width: 22px;
+    height: 14px;
+    background: #ff4488;
+    border-radius: 50%;
+    box-shadow: 0 0 16px #ff4488;
+  }
+
+  h1 {
+    margin: 0 0 4px 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.25rem;
+    color: #ffcc00;
+    text-shadow: 0 0 12px #ff8800, 0 0 30px #ff4400;
+    text-align: center;
+    letter-spacing: 0.04em;
+  }
+
+  .subtitle {
+    color: #aaccff;
+    margin: 0 0 30px 0;
+    font-size: 0.78rem;
+    font-family: 'Press Start 2P', monospace;
+    text-align: center;
+    text-shadow: 0 0 8px #6688cc;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+  }
+
+  .scoreboard {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 28px;
+  }
+  .score-item {
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: #88aacc;
+  }
+  .score-item .num {
+    display: block;
+    font-size: 1.8rem;
+    color: #ffcc00;
+    text-shadow: 0 0 14px #ff8800;
+    margin-bottom: 4px;
+  }
+
+  .quiz-card {
+    width: 100%;
+    max-width: 580px;
+    background: #13132b;
+    border: 3px solid #2e2e55;
+    border-radius: 8px;
+    padding: 22px 22px 20px 22px;
+    margin: 0 auto 22px auto;
+    box-sizing: border-box;
+    box-shadow: 0 0 18px rgba(100,100,255,0.10);
+    position: relative;
+  }
+  .quiz-card.cleared {
+    border-color: #2f855a;
+    box-shadow: 0 0 18px rgba(80,200,120,0.18);
+  }
+  .quiz-card h3 {
+    margin: 0 0 8px 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
+    color: #ff88cc;
+    text-shadow: 0 0 6px #cc4488;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .quiz-card .vignette {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #d0d0ee;
+    margin: 0 0 16px 0;
+    background: #0a0a1a;
+    padding: 14px 16px;
     border-radius: 6px;
-    cursor: pointer;
-    transition: 0.15s;
+    border-left: 3px solid #5555aa;
   }
-  .btn-row button:hover {
-    background: #333;
-    color: white;
-  }
-  .btn-row button.active {
-    background: #222;
-    color: white;
-    border-color: #222;
-  }
-  .scene {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 80px;
-    padding: 40px 24px 30px 24px;
-    min-height: 320px;
-  }
-  .figure {
+  .options {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 140px;
-    transition: opacity 0.4s ease;
+    gap: 7px;
   }
-  .head-wrapper {
-    width: 60px;
-    height: 70px;
-    position: relative;
-  }
-  .head {
-    width: 60px;
-    height: 70px;
-    background: #d4a574;
-    border-radius: 50% 50% 45% 45%;
-    position: relative;
-    transition: all 0.5s ease;
-  }
-  .eye-left, .eye-right {
-    width: 8px;
-    height: 8px;
-    background: #1a1a1a;
-    border-radius: 50%;
-    position: absolute;
-    top: 22px;
-  }
-  .eye-left { left: 14px; }
-  .eye-right { right: 14px; }
-  .mouth {
-    width: 22px;
-    height: 6px;
-    border-bottom: 2px solid #1a1a1a;
-    border-radius: 0 0 8px 8px;
-    position: absolute;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: all 0.5s ease;
-  }
-  .mouth.droop {
-    width: 26px;
-    border-radius: 0 0 2px 10px;
-    transform: translateX(-50%) rotate(-8deg);
-    border-bottom-width: 2.5px;
-  }
-  .tongue {
-    width: 16px;
-    height: 10px;
-    background: #e07070;
-    border-radius: 4px;
-    position: absolute;
-    bottom: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-    transition: all 0.5s ease;
-    opacity: 0;
-  }
-  .tongue.deviate {
-    opacity: 1;
-    transform: translateX(calc(-50% + 14px));
-  }
-  .arms-wrap {
-    width: 94px;
-    height: 40px;
-    margin-top: 0;
-    transition: all 0.5s ease;
-  }
-  .arms-wrap.slump {
-    transform: rotate(8deg) translateY(6px);
-  }
-  .torso {
-    width: 50px;
-    height: 90px;
-    background: #3a7ca5;
-    border-radius: 8px 8px 2px 2px;
-    position: relative;
-    transition: all 0.5s ease;
-  }
-  .torso.slump {
-    transform: rotate(12deg);
-    height: 82px;
-  }
-  .label {
-    margin-top: 16px;
+  .options button {
+    padding: 12px 16px;
     font-size: 0.85rem;
-    color: #666;
-    text-align: center;
-    min-height: 38px;
-  }
-  .info-panel {
-    padding: 0 24px 24px 24px;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .info-panel p {
-    margin: 6px 0;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: #333;
-  }
-  .info-panel .tract-name {
-    font-weight: 600;
-    font-size: 1.05rem;
-    margin-bottom: 10px;
-  }
-  .info-panel .highlight {
-    background: #fff3cd;
-    padding: 10px 14px;
+    font-family: 'Courier New', monospace;
+    border: 2px solid #3a3a66;
+    background: #181833;
+    color: #ccccee;
     border-radius: 6px;
-    border-left: 3px solid #e6a817;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.1s;
+    letter-spacing: 0.02em;
+  }
+  .options button:hover {
+    border-color: #8888cc;
+    background: #202044;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(130,130,255,0.2);
+  }
+  .options button.correct {
+    border-color: #44cc88;
+    background: #0a2a1a;
+    color: #66ffaa;
+    font-weight: 700;
+    box-shadow: 0 0 16px rgba(80,255,160,0.30);
+  }
+  .options button.correct::before {
+    content: '>> ';
+  }
+  .options button.wrong {
+    border-color: #cc4466;
+    background: #2a0a14;
+    color: #ff6688;
+    text-decoration: line-through;
+  }
+  .options button:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
+  .feedback {
     margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 0.84rem;
+    line-height: 1.55;
+    display: none;
+    color: #cce0ff;
+    background: #0f1a2e;
+    border-left: 3px solid #5588cc;
   }
-  .info-panel .highlight.bad {
-    background: #fde8e8;
-    border-left-color: #c53030;
+  .feedback.show {
+    display: block;
+    animation: flickerIn 0.3s ease;
   }
-  .reset-hint {
-    margin-top: 14px;
-    font-size: 0.8rem;
-    color: #888;
+  @keyframes flickerIn {
+    0% { opacity: 0; transform: translateY(-4px); }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; transform: translateY(0); }
   }
   .refs {
-    max-width: 700px;
+    max-width: 580px;
     width: 100%;
-    padding: 0 24px;
-    font-size: 0.75rem;
-    color: #777;
-    line-height: 1.6;
+    margin: 0 auto;
+    font-size: 0.65rem;
+    color: #5a5a88;
+    line-height: 1.9;
+    padding: 0 4px;
   }
   .refs p {
     margin: 2px 0;
-    text-indent: -20px;
-    padding-left: 20px;
+    text-indent: -24px;
+    padding-left: 24px;
   }
-  @media (max-width: 600px) {
-    .scene {
-      gap: 30px;
-      padding: 30px 12px 20px 12px;
-    }
-    .info-panel {
-      padding: 0 12px 20px 12px;
-    }
-    .refs {
-      padding: 0 12px;
-    }
+  .reset-wrap {
+    text-align: center;
+    margin-top: 18px;
+  }
+  .reset-wrap button {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    padding: 10px 20px;
+    border: 2px solid #5555aa;
+    background: #0f0f22;
+    color: #8888cc;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .reset-wrap button:hover {
+    border-color: #ffcc00;
+    color: #ffcc00;
+    box-shadow: 0 0 14px rgba(255,200,0,0.3);
   }
 </style>
 </head>
 <body>
 
-<h1>Corticospinal vs Corticobulbar</h1>
-<p class="subtitle">Click a tract to see what happens when it's damaged.</p>
+<div class="tv-frame">
+  <div class="tv-antenna"></div>
+  <div class="tv-screen">
+    <h1>LESION LOCATOR!!</h1>
+    <p class="subtitle">Three patients enter.<br>You find the lesion.</p>
 
-<div class="demo-area">
-  <div class="btn-row">
-    <button id="btnSpinal" onclick="showSpinal()">Corticospinal Lesion</button>
-    <button id="btnBulbar" onclick="showBulbar()">Corticobulbar Lesion</button>
-  </div>
-
-  <div class="scene">
-    <div class="figure" id="figSpinal">
-      <div class="head-wrapper">
-        <div class="head">
-          <div class="eye-left"></div>
-          <div class="eye-right"></div>
-          <div class="mouth"></div>
-          <div class="tongue"></div>
-        </div>
-      </div>
-      <div class="arms-wrap" id="armsSpinal">
-        <svg width="94" height="40" viewBox="0 0 94 40">
-          <line x1="0" y1="20" x2="47" y2="10" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
-          <line x1="47" y1="10" x2="94" y2="20" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="torso" id="torsoSpinal"></div>
-      <div class="label">Corticospinal<br><span style="font-size:0.75rem">posture &amp; respiration</span></div>
+    <div class="scoreboard">
+      <div class="score-item"><span class="num" id="scoreNum">0</span>CLEARED</div>
+      <div class="score-item"><span class="num" id="streakNum">0</span>STREAK</div>
     </div>
 
-    <div class="figure" id="figBulbar">
-      <div class="head-wrapper">
-        <div class="head">
-          <div class="eye-left"></div>
-          <div class="eye-right"></div>
-          <div class="mouth" id="mouthBulbar"></div>
-          <div class="tongue" id="tongueBulbar"></div>
-        </div>
+    <div class="quiz-card" id="card1">
+      <h3>&#9654; Case 1</h3>
+      <p class="vignette">A 62-year-old man arrives after a stroke. His speech is slow and effortful with a strained-strangled voice quality. His face droops on the right side only below the eye. He can wrinkle his forehead and close both eyes. When asked to stick out his tongue, it deviates to the right. His arms and legs show no weakness on either side.</p>
+      <div class="options" id="options1">
+        <button onclick="check(1, 'A', this)">A. Left corticospinal tract</button>
+        <button onclick="check(1, 'B', this)">B. Left corticobulbar tract</button>
+        <button onclick="check(1, 'C', this)">C. Right hypoglossal nerve</button>
+        <button onclick="check(1, 'D', this)">D. Right corticobulbar tract</button>
       </div>
-      <div class="arms-wrap">
-        <svg width="94" height="40" viewBox="0 0 94 40">
-          <line x1="0" y1="20" x2="47" y2="10" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
-          <line x1="47" y1="10" x2="94" y2="20" stroke="#3a7ca5" stroke-width="10" stroke-linecap="round"/>
-        </svg>
+      <div class="feedback" id="feedback1"></div>
+    </div>
+
+    <div class="quiz-card" id="card2">
+      <h3>&#9654; Case 2</h3>
+      <p class="vignette">A 24-year-old woman sustained a cervical spinal cord injury at C4 in a car accident. She can speak but her voice is quiet and breathy. She runs out of air after four or five words and has to take frequent breaths mid-sentence. Her face and tongue move normally, and her articulation is clear when she has enough air.</p>
+      <div class="options" id="options2">
+        <button onclick="check(2, 'A', this)">A. Corticobulbar tract</button>
+        <button onclick="check(2, 'B', this)">B. Hypoglossal nerve</button>
+        <button onclick="check(2, 'C', this)">C. Corticospinal tract</button>
+        <button onclick="check(2, 'D', this)">D. Vagus nerve</button>
       </div>
-      <div class="torso"></div>
-      <div class="label">Corticobulbar<br><span style="font-size:0.75rem">face &amp; articulation</span></div>
+      <div class="feedback" id="feedback2"></div>
+    </div>
+
+    <div class="quiz-card" id="card3">
+      <h3>&#9654; Case 3</h3>
+      <p class="vignette">A 71-year-old man with Parkinson's disease has a stooped, forward-flexed posture. His speech is monopitched and monoloud with reduced vocal intensity. He does not have facial droop, tongue deviation, or articulatory imprecision. His voice quality is breathy and weak, but his larynx itself shows no structural abnormality on exam.</p>
+      <div class="options" id="options3">
+        <button onclick="check(3, 'A', this)">A. Bilateral corticobulbar lesion</button>
+        <button onclick="check(3, 'B', this)">B. Unilateral vagus nerve lesion</button>
+        <button onclick="check(3, 'C', this)">C. Disrupted corticospinal &amp; extrapyramidal postural control</button>
+        <button onclick="check(3, 'D', this)">D. Facial nerve lesion</button>
+      </div>
+      <div class="feedback" id="feedback3"></div>
+    </div>
+
+    <div class="reset-wrap">
+      <button onclick="resetAll()">&#8634; Play Again</button>
+    </div>
+
+    <div class="refs" style="margin-top:22px;">
+      <p>Andreatta, R. D. (2023). <em>Neuroscience fundamentals for communication sciences and disorders</em> (2nd ed.). Plural Publishing.</p>
+      <p>Pouw, W., Harrison, S. J., Esteve-Gibert, N., &amp; Dixon, J. A. (2020). Energy flows in gesture-speech physics. <em>JASA, 148</em>(3), 1231&ndash;1247.</p>
+      <p>Pulliam, W. (2026). <em>Neuroscience 3WW-CRN 41452</em> [PowerPoint slides]. ENMU.</p>
     </div>
   </div>
-
-  <div class="info-panel" id="infoPanel">
-    <p style="color:#888">Click a button above to see the effect of each lesion.</p>
-  </div>
-</div>
-
-<div class="refs">
-  <p>Andreatta, R. D. (2023). <em>Neuroscience fundamentals for communication sciences and disorders</em> (2nd ed.). Plural Publishing.</p>
-  <p>Pouw, W., Harrison, S. J., Esteve-Gibert, N., &amp; Dixon, J. A. (2020). Energy flows in gesture-speech physics. <em>JASA, 148</em>(3), 1231&ndash;1247.</p>
-  <p>Pulliam, W. (2026). <em>Neuroscience 3WW-CRN 41452</em> [PowerPoint slides]. ENMU.</p>
 </div>
 
 <script>
-  var btnSpinal = document.getElementById('btnSpinal');
-  var btnBulbar = document.getElementById('btnBulbar');
-  var torsoSpinal = document.getElementById('torsoSpinal');
-  var armsSpinal = document.getElementById('armsSpinal');
-  var mouthBulbar = document.getElementById('mouthBulbar');
-  var tongueBulbar = document.getElementById('tongueBulbar');
-  var infoPanel = document.getElementById('infoPanel');
-  var figSpinal = document.getElementById('figSpinal');
-  var figBulbar = document.getElementById('figBulbar');
+  var answered = {};
+  var score = 0;
+
+  function check(caseNum, choice, btn) {
+    if (answered[caseNum]) return;
+    answered[caseNum] = true;
+
+    var card = document.getElementById('card' + caseNum);
+    var options = document.getElementById('options' + caseNum).children;
+    var fb = document.getElementById('feedback' + caseNum);
+    var correctAnswer = caseNum === 1 ? 'B' : caseNum === 2 ? 'C' : 'C';
+    var idx = choice === 'A' ? 0 : choice === 'B' ? 1 : choice === 'C' ? 2 : 3;
+
+    for (var i = 0; i < options.length; i++) {
+      options[i].disabled = true;
+    }
+
+    if (choice === correctAnswer) {
+      score++;
+      document.getElementById('scoreNum').textContent = score;
+      document.getElementById('streakNum').textContent = score;
+      card.classList.add('cleared');
+    } else {
+      options[idx].classList.add('wrong');
+      document.getElementById('streakNum').textContent = '0';
+    }
+
+    var correctBtn = options[correctAnswer === 'A' ? 0 : correctAnswer === 'B' ? 1 : correctAnswer === 'C' ? 2 : 3];
+    correctBtn.classList.add('correct');
+
+    var explanations = {
+      1: '<strong>Left corticobulbar tract.</strong> Contralateral lower facial droop and tongue deviation with no limb weakness rules out corticospinal. The forehead is spared, which means the lesion is upper motor neuron (corticobulbar), not the facial nerve itself. Most cranial nerve nuclei get bilateral input, but the lower face (CN VII) and tongue (CN XII) are wired contralaterally. A one-sided lesion hits them hard. Bilateral damage causes pseudobulbar palsy with spastic dysarthria.',
+      2: '<strong>Corticospinal tract.</strong> The C4 injury damages phrenic motor neurons controlling the diaphragm. Voluntary respiratory support is lost, so subglottal pressure collapses. The face and tongue are normal because corticobulbar is intact. Articulation is fine when air is available. Pure respiratory problem.',
+      3: '<strong>Disrupted corticospinal and extrapyramidal postural control.</strong> Parkinson disease affects basal ganglia circuits, disrupting corticospinal and extrapyramidal (vestibulospinal, reticulospinal) postural systems. The stooped posture compresses the larynx and restricts diaphragmatic movement. Result: hypokinetic dysarthria with monopitch, monoloudness, and low intensity. The larynx is structurally intact.'
+    };
+
+    fb.innerHTML = explanations[caseNum];
+    fb.className = 'feedback show';
+  }
 
   function resetAll() {
-    btnSpinal.classList.remove('active');
-    btnBulbar.classList.remove('active');
-    torsoSpinal.classList.remove('slump');
-    armsSpinal.classList.remove('slump');
-    mouthBulbar.classList.remove('droop');
-    tongueBulbar.classList.remove('deviate');
-    figSpinal.style.opacity = '1';
-    figBulbar.style.opacity = '1';
-  }
+    answered = {};
+    score = 0;
+    document.getElementById('scoreNum').textContent = '0';
+    document.getElementById('streakNum').textContent = '0';
 
-  function showSpinal() {
-    resetAll();
-    btnSpinal.classList.add('active');
-    torsoSpinal.classList.add('slump');
-    armsSpinal.classList.add('slump');
-    figBulbar.style.opacity = '0.3';
-    infoPanel.innerHTML =
-      '<p class="tract-name">Corticospinal Tract Lesion</p>' +
-      '<p>The corticospinal tract is the body highway. It runs from the motor cortex through the internal capsule, cerebral peduncles, and pons, then about 90% of fibers decussate at the pyramidal decussation in the lower medulla to form the lateral corticospinal tract (Andreatta, 2023). The anterior branch stays ipsilateral and controls axial muscles for posture and balance.</p>' +
-      '<div class="highlight bad">' +
-      '<p style="margin:0"><strong>Speech is affected indirectly.</strong> The tract drives the diaphragm (C3&ndash;C5) and intercostals (T1&ndash;T11) for voluntary breath control. Damage strips away volitional respiratory support, so subglottal pressure drops. The patient produces short phrases with reduced loudness and a breathy voice. Posture collapses, compressing the larynx and restricting pitch range. The articulators are intact but the air supply and stable platform are gone (Andreatta, 2023).</p>' +
-      '</div>' +
-      '<div class="highlight">' +
-      '<p style="margin:0"><strong>Clinical note:</strong> A cervical spinal cord injury at C3&ndash;C5 damages the phrenic motor neurons and eliminates volitional vocalization. In Parkinson&rsquo;s disease, disrupted postural control produces a stooped stance that contributes to hypokinetic dysarthria: monopitch, monoloudness, and reduced intensity.</p>' +
-      '</div>' +
-      '<p class="reset-hint">Click the other button to compare.</p>';
-  }
-
-  function showBulbar() {
-    resetAll();
-    btnBulbar.classList.add('active');
-    mouthBulbar.classList.add('droop');
-    tongueBulbar.classList.add('deviate');
-    figSpinal.style.opacity = '0.3';
-    infoPanel.innerHTML =
-      '<p class="tract-name">Corticobulbar Tract Lesion</p>' +
-      '<p>The corticobulbar tract is the face highway. It follows the same initial path through the corona radiata and internal capsule, then fibers peel off at different brainstem levels to synapse on cranial nerve motor nuclei (Andreatta, 2023). Most nuclei get bilateral input, but three critical exceptions are wired contralaterally: the lower face (CN VII), the tongue (CN XII), and the trigeminal motor nucleus.</p>' +
-      '<div class="highlight bad">' +
-      '<p style="margin:0"><strong>Speech is affected directly.</strong> The lower face droops contralaterally because CN VII lower division only gets input from the opposite hemisphere. Bilabial sounds like /p/, /b/, and /m/ distort as air escapes the weak side. The tongue deviates toward the weak side on protrusion because CN XII is predominantly contralateral. Lingual sounds like /t/, /d/, /s/, /z/, /l/, and /n/ lose precision and become slushy. Bilateral damage to nucleus ambiguus (CN X) produces spastic dysarthria with a strained-strangled voice (Andreatta, 2023).</p>' +
-      '</div>' +
-      '<div class="highlight">' +
-      '<p style="margin:0"><strong>Clinical note:</strong> The upper face is spared in a unilateral lesion because it gets bilateral input. A patient can wrinkle the forehead and close both eyes but cannot smile or purse the lips on the weak side. Bilateral corticobulbar damage causes pseudobulbar palsy with slow, effortful speech and a spastic tongue.</p>' +
-      '</div>' +
-      '<p class="reset-hint">Click the other button to compare.</p>';
+    for (var c = 1; c <= 3; c++) {
+      var card = document.getElementById('card' + c);
+      card.classList.remove('cleared');
+      var opts = document.getElementById('options' + c).children;
+      for (var i = 0; i < opts.length; i++) {
+        opts[i].disabled = false;
+        opts[i].classList.remove('correct', 'wrong');
+      }
+      document.getElementById('feedback' + c).className = 'feedback';
+    }
   }
 </script>
 
